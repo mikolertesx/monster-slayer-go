@@ -10,6 +10,11 @@ func PrintGreeting() {
 	fmt.Println("Good luck!")
 }
 
+func PrintHealth(player int, monster int) {
+	fmt.Printf("Player: %d\n", player)
+	fmt.Printf("Monster: %d\n", monster)
+}
+
 func ShowAvailableActions(specialAttackIsAvailable bool) {
 	fmt.Println("Please choose your action")
 	fmt.Println("-----------------------")
@@ -18,4 +23,11 @@ func ShowAvailableActions(specialAttackIsAvailable bool) {
 	if specialAttackIsAvailable {
 		fmt.Println("(3) Special Attack")
 	}
+}
+
+func DeclareWinner(winner string) {
+	fmt.Println("----------------------------")
+	fmt.Println("GAME OVER!")
+	fmt.Println("----------------------------")
+	fmt.Printf("%v won!\n", winner)
 }

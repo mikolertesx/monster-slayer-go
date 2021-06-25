@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/mikolertesx/monster-slayer/actions"
 	"github.com/mikolertesx/monster-slayer/interaction"
 )
 
@@ -16,7 +15,7 @@ func main() {
 		winner = executeRound()
 	}
 
-	endGame()
+	endGame(winner)
 }
 
 func startGame() {
@@ -29,10 +28,34 @@ func executeRound() string {
 
 	interaction.ShowAvailableActions(isSpecialRound)
 	userChoice := interaction.GetPlayerChoice(isSpecialRound)
+	playerHealth, monsterHealth := actions.GetHealthAmounts()
+	interaction.PrintHealth(playerHealth, monsterHealth)
 
-	fmt.Println(userChoice)
+	if userChoice == "ATTACK" {
+		actions.AttackMonster(false)
+	} else if userChoice == "HEAL" {
+		actions.HealPlayer()
+	} else {
+		actions.AttackMonster(true)
+	}
+
+	_, monsterHealth = actions.GetHealthAmounts()
+
+	if monsterHealth <= 0 {
+		return "Player"
+	}
+
+	actions.AttackPlayer()
+
+	playerHealth, _ = actions.GetHealthAmounts()
+
+	if playerHealth <= 0 {
+		return "MONSTER"
+	}
 
 	return ""
 }
 
-func endGame() {}
+func endGame(winner string) {
+	interaction.DeclareWinner(winner)
+}
