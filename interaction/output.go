@@ -2,6 +2,9 @@ package interaction
 
 import (
 	"fmt"
+	"os"
+
+	"github.com/common-nighthawk/go-figure"
 )
 
 type RoundData struct {
@@ -14,7 +17,8 @@ type RoundData struct {
 }
 
 func PrintGreeting() {
-	fmt.Println("Monster Slayer")
+	asciiFigure := figure.NewFigure("Hello World", "", true)
+	asciiFigure.Print()
 	fmt.Println("Starting a new game...")
 	fmt.Println("Good luck!")
 }
@@ -50,7 +54,39 @@ func PrintRoundStatistics(roundData *RoundData) {
 
 func DeclareWinner(winner string) {
 	fmt.Println("----------------------------")
-	fmt.Println("GAME OVER!")
+	asciiFigure := figure.NewColorFigure("Game Over", "", "red", true)
+	asciiFigure.Print()
 	fmt.Println("----------------------------")
 	fmt.Printf("%v won!\n", winner)
+}
+
+func WriteLogFile(rounds *[]RoundData) {
+	file, err := os.Create("gamelog.txt")
+
+	if err != nil {
+		fmt.Println("Saving a log file failed. Exiting.")
+		return
+	}
+
+	for index, value := range *rounds {
+		logEntry := map[string]string{
+			"Round":                 fmt.Sprint(index + 1),
+			"Action":                value.Action,
+			"Player Attack Damage":  fmt.Sprint(value.PlayerAttackDamage),
+			"Player Heal Value":     fmt.Sprint(value.PlayerHealValue),
+			"Monster Attack Damage": fmt.Sprint(value.MonsterAttackDmg),
+			"Player Health":         fmt.Sprint(value.PlayerHealth),
+			"Monster Health":        fmt.Sprint(value.MonsterHealth),
+		}
+
+		logLine := fmt.Sprintln(logEntry)
+		_, err = file.WriteString(logLine)
+		if err != nil {
+			fmt.Println("Writing into log failed, skipping.")
+			continue
+		}
+	}
+
+	file.Close()
+	fmt.Println("Write data to log!")
 }
